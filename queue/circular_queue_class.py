@@ -12,18 +12,46 @@ class CircularQueueOneSlotEmpty:
     def __init__(self, capacity):
         self.capacity = capacity
         self.N = self.capacity + 1 # 내부 배열 크기(단, 배열의 한칸(슬롯) 비움)
-        self.array = [None] * self.capacity
+        self.array = [None] * self.N
         self.front = 0
         self.rear = 0
         
     def is_empty(self):
         return self.front == self.rear
+    
     def is_full(self):
         return self.front == (self.rear + 1) % self.N
-
     
+    def enqueue(self, item):
+        # 원형 큐 맨 뒤에 요소 추가
+        if not self.is_full():
+            self.rear = (self.rear + 1) % self.N
+            self.array[self.rear] = item
+        else:
+            print("원형 큐 포화 상태. 요소 삽입 불가.")
 
-    
+    def dequeue(self):
+        # 원형 큐 맨 앞의 요소 삭제
+        if not self.is_empty():
+            self.front = (self.front + 1) % self.N
+            item = self.array[self.front]
+            self.array[self.front] = None # 옵션
+            return item
+        else:
+            raise IndexError("원형 큐가 빈 상태. 요소 삭제 불가.")
+        
+    def peek(self):
+        # 현재 원형 큐의 저장된 맨 앞의 요소를 검색
+        if not self.is_empty():
+            return self.array[(self.front + 1) % self.N]
+        else:
+            raise IndexError("원형 큐가 빈 상태. 요소 삭제 불가.")
+        
+    def size(self):
+        # 현재 원형 큐에 저장되어있는 요소의 갯수
+        return (self.rear - self.front + self.N) % self.N
+
+        
    
     def display(self, msg="CircularQueueOneSlotEmpty"):
         
@@ -95,8 +123,26 @@ def test_basic():
     q.display()
     print("peek:", q.peek())
 
-     
+def quiz_2():
+    print("=======Quiz_2==========")
+    q = CircularQueueOneSlotEmpty(capacity=8)
+    q.front = 6
+    q.rear = 6
+    q.enqueue(10)
+    q.display("10 삽입 결과")
+    q.enqueue(11)
+    q.display("11 삽입 결과")
+    q.enqueue(12)
+    q.display("12 삽입 결과")
+    q.enqueue(13)
+    q.display("13 삽입 결과")
+    q.dequeue()
+    q.display("10 삽입 결과")
+    q.dequeue()
+    q.display("10 삽입 결과")
+
 
 if __name__ == "__main__":
     test_basic()
+    quiz_2()
     
